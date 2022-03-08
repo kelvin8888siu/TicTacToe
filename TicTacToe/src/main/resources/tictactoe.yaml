@@ -1,0 +1,258 @@
+openapi: 3.0.0
+info:
+  title: Simple TicTacToe API
+  description: TicTacToe API
+  contact:
+    email: siu.ka@northeastern.edu
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0-oas3
+servers:
+- url: https://virtserver.swaggerhub.com/northeasternSwagger/Inventory/1.0.0
+  description: SwaggerHub API Auto Mocking
+- url: https://localhost:8080/
+tags:
+- name: player
+- name: game
+- name: move
+paths:
+  /player:
+    post:
+      tags:
+      - player
+      summary: Creates a player
+      description: Player or user creation
+      operationId: createPlayer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Player'
+        required: true
+      responses:
+        "201":
+          description: Player Successfully Added
+  /game:
+    post:
+      tags:
+      - game
+      summary: Creates a new game
+      description: New game creation
+      operationId: createGame
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Game'
+        required: true
+      responses:
+        "201":
+          description: Game Successfully Created
+  /move:
+    post:
+      tags:
+      - move
+      summary: Creates a new move in a game
+      description: New move creation
+      operationId: createMove
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Move'
+        required: true
+      responses:
+        "201":
+          description: Move Successfully Added
+  /player/{username}:
+    get:
+      tags:
+        - player
+      summary: Searches for id of player based on username
+      operationId: searchIdOfPlayer
+      description: Id of player will be read
+      parameters:
+        - name: username
+          in: path
+          description: Username of player
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Player'
+        400:
+          description: Invalid ID supplied
+        404:
+          description: Username not found
+  /game/{player_one_id}:
+    get:
+      tags:
+      - game
+      summary: Searches for all existing games based on a player
+      description: All existing games by a player will be read
+      operationId: searchAllGamesOfPlayer
+      parameters:
+      - name: player_one_id
+        in: path
+        description: ID of player
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Game'
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: Games not found
+  /move/{game_id}:
+    get:
+      tags:
+      - move
+      summary: Searches for all moves for a particular game
+      description: All moves of a specific game is read
+      operationId: searchAllMovesOfGame
+      parameters:
+      - name: game_id
+        in: path
+        description: ID of game
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Move'
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: Moves not found
+  /game/{id}:
+    delete:
+      tags:
+      - game
+      summary: Delete a game for a player
+      description: Delete a game
+      operationId: deleteGame
+      parameters:
+      - name: id
+        in: path
+        description: id of the game
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Game'
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: Game not found
+components:
+  schemas:
+    Player:
+      required:
+      - password
+      - username
+      type: object
+      properties:
+        id:
+          minimum: 0
+          type: integer
+          example: 12345
+        username:
+          type: string
+          example: kelvin97siu
+        password:
+          type: string
+          example: 1234GG3
+    Game:
+      required:
+      - game_size
+      - game_status
+      - player_one_id
+      - player_one_piece
+      - player_two_id
+      type: object
+      properties:
+        id:
+          minimum: 0
+          type: integer
+          example: 12345
+        player_one_id:
+          minimum: 0
+          type: integer
+          example: 12345
+        player_one_piece:
+          type: string
+          enum:
+          - X
+          - O
+        player_two_id:
+          minimum: 0
+          type: integer
+          example: 5
+        game_size:
+          minimum: 3
+          type: integer
+          example: 3
+        game_status:
+          type: string
+          enum:
+          - IN_PROGRESS
+          - WIN
+          - LOSS
+    Move:
+      required:
+      - board_column
+      - board_row
+      - game_id
+      - player_id
+      - time_of_move
+      type: object
+      properties:
+        id:
+          minimum: 0
+          type: integer
+          example: 12345
+        player_id:
+          minimum: 0
+          type: integer
+          example: 12345
+        game_id:
+          minimum: 0
+          type: integer
+          example: 12345
+        board_row:
+          minimum: 3
+          type: integer
+          example: 3
+        board_columnn:
+          minimum: 3
+          type: integer
+          example: 3
+        time_of_move:
+          type: string
